@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>西暦・和暦変換｜元号変換と満年齢を一瞬で計算｜ツール工房</title>
+<meta name="description" content="西暦と和暦（令和・平成・昭和・大正・明治）を相互に変換し、満年齢も表示する無料ツールです。元号の境界日を正確に判定し、日付入力からすぐに変換できます。">
+<link rel="canonical" href="https://ai-kaihatsubu.github.io/wareki-converter/">
+
+<!-- OGP -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="西暦・和暦変換｜元号変換と満年齢を一瞬で計算｜ツール工房">
+<meta property="og:description" content="西暦⇔和暦（令和・平成・昭和・大正・明治）の相互変換と満年齢表示に対応した無料ツール。">
+<meta property="og:url" content="https://ai-kaihatsubu.github.io/wareki-converter/">
+<meta property="og:image" content="https://ai-kaihatsubu.github.io/wareki-converter/icons/icon-512.svg">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0071e3">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.svg">
+
+<!-- JSON-LD: WebApplication -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "西暦・和暦変換",
+  "description": "西暦と和暦（令和・平成・昭和・大正・明治）を相互に変換し、満年齢も表示する無料ツールです。元号の境界日を正確に判定します。",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY"
+  }
+}
+</script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">本文へスキップ</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <h1 class="logo">西暦・和暦変換</h1>
+    <nav class="header-actions" aria-label="表示設定">
+      <button id="theme-toggle" type="button" aria-label="ダーク/ライトモード切替" aria-pressed="false">
+        <span aria-hidden="true">🌙</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- AdSense 広告枠（コンテンツ上） -->
+<div class="ad-slot ad-slot--top" data-ad-position="top" aria-hidden="true">
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-6568622993777242"
+       data-ad-slot="1012000001"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <p class="ad-placeholder">広告スペース（準備中）</p>
+</div>
+
+<main id="main" class="container">
+
+  <section class="tool-section" aria-labelledby="tool-heading">
+    <h2 id="tool-heading">西暦・和暦変換</h2>
+    <p class="lead">
+      モードを選んで日付を入力すると、結果が自動で表示されます。
+      入力値はこの端末（ブラウザ）内だけで処理され、外部に送信されることはありません。
+    </p>
+
+    <div id="tool-root">
+
+      <!-- モードタブ -->
+      <div class="mode-tabs" role="tablist" aria-label="変換モード">
+        <button type="button" class="mode-tab" role="tab" id="tab-to-wareki" aria-controls="panel-to-wareki" aria-selected="true" data-mode="to-wareki">①西暦→和暦</button>
+        <button type="button" class="mode-tab" role="tab" id="tab-to-seireki" aria-controls="panel-to-seireki" aria-selected="false" data-mode="to-seireki" tabindex="-1">②和暦→西暦</button>
+        <button type="button" class="mode-tab" role="tab" id="tab-table" aria-controls="panel-table" aria-selected="false" data-mode="table" tabindex="-1">③元号一覧</button>
+      </div>
+
+      <!-- ①西暦→和暦 -->
+      <div class="mode-panel is-active" id="panel-to-wareki" role="tabpanel" aria-labelledby="tab-to-wareki">
+        <div class="form-grid">
+          <div class="form-row">
+            <label for="seireki-date">西暦の日付</label>
+            <input type="date" id="seireki-date" value="2026-06-15">
+            <p class="form-help">日付を指定すると、その日が和暦で何年何月何日かを表示します。</p>
+          </div>
+        </div>
+        <div class="result-box">
+          <div class="result-headline">
+            <p class="result-headline__label">和暦</p>
+            <p class="result-headline__value" id="to-wareki-result">令和8年6月15日</p>
+          </div>
+          <p class="result-sub" id="to-wareki-age"></p>
+          <div class="copy-row">
+            <button type="button" class="btn btn-secondary copy-btn" data-target="to-wareki-result">結果をコピー</button>
+          </div>
+        </div>
+        <div class="example-box">
+          <strong>検算例:</strong> 西暦2026年は令和8年です。
+        </div>
+      </div>
+
+      <!-- ②和暦→西暦 -->
+      <div class="mode-panel" id="panel-to-seireki" role="tabpanel" aria-labelledby="tab-to-seireki" hidden>
+        <div class="form-grid">
+          <div class="form-row">
+            <label for="wareki-era">元号・年・月・日</label>
+            <div class="era-input-row">
+              <select id="wareki-era" aria-label="元号">
+                <option value="令和">令和</option>
+                <option value="平成">平成</option>
+                <option value="昭和">昭和</option>
+                <option value="大正">大正</option>
+                <option value="明治">明治</option>
+              </select>
+              <input type="number" id="wareki-year" inputmode="numeric" min="1" max="99" placeholder="年（例: 8）" value="8" aria-label="和暦の年">
+            </div>
+            <div class="era-input-row">
+              <input type="number" id="wareki-month" inputmode="numeric" min="1" max="12" placeholder="月（例: 6）" value="6" aria-label="月">
+              <input type="number" id="wareki-day" inputmode="numeric" min="1" max="31" placeholder="日（例: 15）" value="15" aria-label="日">
+            </div>
+            <p class="form-help">元号・年・月・日を入力すると、西暦の日付に変換します。1年は「元年」として扱われます。</p>
+          </div>
+        </div>
+        <div class="result-box">
+          <div class="result-headline">
+            <p class="result-headline__label">西暦</p>
+            <p class="result-headline__value" id="to-seireki-result">2026年6月15日</p>
+          </div>
+          <p class="result-sub" id="to-seireki-age"></p>
+          <div class="copy-row">
+            <button type="button" class="btn btn-secondary copy-btn" data-target="to-seireki-result">結果をコピー</button>
+          </div>
+        </div>
+        <div class="example-box">
+          <strong>検算例:</strong> 令和8年は西暦2026年です。
+        </div>
+      </div>
+
+      <!-- ③元号一覧 -->
+      <div class="mode-panel" id="panel-table" role="tabpanel" aria-labelledby="tab-table" hidden>
+        <p class="form-help">主な元号の開始日と西暦の対応です。境界日の前後で元号が切り替わります。</p>
+        <table class="era-table">
+          <thead>
+            <tr><th>元号</th><th>開始日</th><th>終了日</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="era-badge">令和</span></td><td>2019年5月1日</td><td>現在</td></tr>
+            <tr><td><span class="era-badge">平成</span></td><td>1989年1月8日</td><td>2019年4月30日</td></tr>
+            <tr><td><span class="era-badge">昭和</span></td><td>1926年12月25日</td><td>1989年1月7日</td></tr>
+            <tr><td><span class="era-badge">大正</span></td><td>1912年7月30日</td><td>1926年12月24日</td></tr>
+            <tr><td><span class="era-badge">明治</span></td><td>1868年1月25日</td><td>1912年7月29日</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p id="copy-status" class="status-text" role="status" aria-live="polite"></p>
+
+    </div>
+  </section>
+
+  <!-- 使い方 -->
+  <section class="tool-section" aria-labelledby="howto-heading">
+    <h2 id="howto-heading">使い方</h2>
+    <ol>
+      <li>上部のタブから「①西暦→和暦」「②和暦→西暦」「③元号一覧」を選びます。</li>
+      <li>①では、西暦の日付を選択すると、和暦（令和・平成・昭和・大正・明治のいずれか）の年月日と、その日付時点での満年齢が表示されます。</li>
+      <li>②では、元号・年・月・日を入力すると、対応する西暦の日付と満年齢が表示されます。元号の「1年」は「元年」として扱われます。</li>
+      <li>③では、各元号の開始日・終了日の一覧を確認できます。</li>
+      <li>各結果の「コピー」ボタンで、結果をテキストとしてコピーできます。</li>
+    </ol>
+    <p>
+      入力された日付は、この端末（ブラウザ）内だけで計算に使用され、外部のサーバーへ送信されることはありません。
+    </p>
+  </section>
+
+  <!-- FAQ -->
+  <section class="tool-section" aria-labelledby="faq-heading">
+    <h2 id="faq-heading">よくある質問</h2>
+
+    <h3>2026年は和暦で何年ですか？</h3>
+    <p>
+      令和8年です。令和は2019年5月1日に始まったため、2026年は「2026 − 2018 = 8」で令和8年となります。
+    </p>
+
+    <h3>元号の境界日はどのように判定していますか？</h3>
+    <p>
+      本ツールでは、令和=2019年5月1日〜、平成=1989年1月8日〜2019年4月30日、
+      昭和=1926年12月25日〜1989年1月7日、大正=1912年7月30日〜1926年12月24日、
+      明治=1868年1月25日〜1912年7月29日として判定しています。
+      境界日（改元日）を含む期間が正しく算出されるよう、日付を比較して元号を決定しています。
+    </p>
+
+    <h3>「元年」とはどういう意味ですか？</h3>
+    <p>
+      元号が変わった最初の年は「1年」ではなく「元年」と表記します（例: 令和元年=2019年）。
+      本ツールの①の結果でも、該当する年は「元年」と表示されます。②で和暦から西暦に変換する際は、
+      「1」を入力すると元年として扱われます。
+    </p>
+
+    <h3>満年齢はどのように計算されますか？</h3>
+    <p>
+      入力した日付（誕生日として）から、本日（2026年6月15日）までの満年齢を計算します。
+      誕生日が今年まだ来ていない場合は1歳少なく表示されます。
+      ①「西暦→和暦」「②和暦→西暦」のいずれでも、入力した日付を基準とした満年齢が表示されます。
+    </p>
+
+    <h3>明治より前の元号には対応していますか？</h3>
+    <p>
+      本ツールは明治・大正・昭和・平成・令和の5元号に対応しています。
+      明治より前の元号（慶応・安政など）には対応していません。
+    </p>
+
+    <h3>入力した日付は保存・送信されますか？</h3>
+    <p>
+      いいえ。本ツールは入力された日付を外部に送信しません。すべての計算はこの端末（ブラウザ）内で行われます。
+      画面表示用の設定（ダーク/ライト表示等）のみ、ブラウザのlocalStorageに保存される場合があります。
+    </p>
+  </section>
+
+  <!-- アフィリエイト枠 -->
+  <aside class="affiliate-box" aria-labelledby="affiliate-heading">
+    <h2 id="affiliate-heading">おすすめ</h2>
+    <p class="pr-label">[PR]</p>
+    <ul class="affiliate-list" id="affiliate-list">
+      <!-- monetization.js で動的に生成 -->
+    </ul>
+  </aside>
+
+  <!-- Pro案内 -->
+  <section class="pro-box" aria-labelledby="pro-heading">
+    <h2 id="pro-heading">Proプラン</h2>
+    <p>
+      買い切り¥480で、広告非表示・干支表示・複数日付の一括変換などの機能が利用できる予定です（準備中）。
+    </p>
+    <button id="pro-button" type="button" class="btn btn-primary">Proを購入（準備中）</button>
+    <p class="dev-only">
+      <button id="dev-pro-toggle" type="button" class="btn btn-secondary">Proフラグを切替（開発用）</button>
+    </p>
+  </section>
+
+</main>
+
+<!-- AdSense 広告枠（コンテンツ下） -->
+<div class="ad-slot ad-slot--bottom" data-ad-position="bottom" aria-hidden="true">
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-6568622993777242"
+       data-ad-slot="1012000002"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <p class="ad-placeholder">広告スペース（準備中）</p>
+</div>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <nav aria-label="フッターリンク">
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="terms.html">利用規約</a>
+      <a href="operator.html">運営者情報</a>
+    </nav>
+    <p class="copyright">&copy; 2026 ツール工房</p>
+  </div>
+</footer>
+
+<script src="monetization.js" defer></script>
+<script src="app.js" defer></script>
+<script>
+  // PWA: Service Worker 登録（相対パスなのでサブパス公開でも scope が正しく効く）
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
+</script>
+</body>
+</html>

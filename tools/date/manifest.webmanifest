@@ -1,0 +1,25 @@
+{
+  "name": "年齢・日数計算ツール｜満年齢や日付の差を計算",
+  "short_name": "年齢・日数計算",
+  "description": "生年月日から満年齢・総日数・次の誕生日まで、2つの日付の差、基準日からN日後/前を計算するツールです。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f8fa",
+  "theme_color": "#2563eb",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

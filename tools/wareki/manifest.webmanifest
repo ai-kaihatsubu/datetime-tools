@@ -1,0 +1,25 @@
+{
+  "name": "西暦・和暦変換｜元号変換と満年齢を一瞬で計算",
+  "short_name": "西暦和暦変換",
+  "description": "西暦と和暦（令和・平成・昭和・大正・明治）を相互に変換し、満年齢も表示する無料ツールです。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f5f7",
+  "theme_color": "#0071e3",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

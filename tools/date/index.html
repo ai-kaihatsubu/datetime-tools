@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>年齢・日数計算ツール｜満年齢・日付の差・N日後を計算｜ツール工房</title>
+<meta name="description" content="生年月日から満年齢・総日数・次の誕生日までを計算。2つの日付の差や、基準日からN日/週/月後(前)の日付も曜日付きで瞬時に表示。無料・登録不要。">
+<link rel="canonical" href="https://ai-kaihatsubu.github.io/date-calculator/">
+
+<!-- OGP -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="年齢・日数計算ツール｜満年齢・日付の差・N日後を計算｜ツール工房">
+<meta property="og:description" content="生年月日から満年齢・総日数・次の誕生日までを計算。2つの日付の差や、基準日からN日/週/月後(前)の日付も曜日付きで瞬時に表示。">
+<meta property="og:url" content="https://ai-kaihatsubu.github.io/date-calculator/">
+<meta property="og:image" content="https://ai-kaihatsubu.github.io/date-calculator/icons/icon-512.svg">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.svg">
+
+<!-- JSON-LD: WebApplication -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "年齢・日数計算ツール",
+  "description": "生年月日から満年齢・総日数・次の誕生日までを計算し、2つの日付の差や基準日からN日/週/月後(前)の日付を曜日付きで表示するツールです。",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY"
+  }
+}
+</script>
+
+<link rel="stylesheet" href="style.css">
+
+<!-- TODO: AdSense（社長がキー登録後に有効化）
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+-->
+</head>
+<body>
+
+<a class="skip-link" href="#main">本文へスキップ</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <h1 class="logo">年齢・日数計算ツール</h1>
+    <nav class="header-actions" aria-label="表示設定">
+      <button id="theme-toggle" type="button" aria-label="ダーク/ライトモード切替" aria-pressed="false">
+        <span aria-hidden="true">🌙</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- TODO: AdSense 広告枠（コンテンツ上） -->
+<div class="ad-slot ad-slot--top" data-ad-position="top" aria-hidden="true">
+  <!-- <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="XXXXXXXXXX"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
+  <p class="ad-placeholder">広告スペース（準備中）</p>
+</div>
+
+<main id="main" class="container">
+
+  <!-- ① 満年齢計算 -->
+  <section class="tool-section" aria-labelledby="age-heading">
+    <h2 id="age-heading">① 満年齢・生まれてからの日数</h2>
+    <p class="lead">
+      生年月日を入力すると、満年齢・生まれてからの総日数・次の誕生日までの日数が計算されます。
+    </p>
+
+    <div class="settings-panel">
+      <div class="setting-row">
+        <label for="birth-date">生年月日</label>
+        <input type="date" id="birth-date">
+      </div>
+      <div class="setting-row">
+        <label for="age-base-date">基準日（今日）</label>
+        <input type="date" id="age-base-date">
+      </div>
+    </div>
+
+    <div id="age-result" class="result-box" aria-live="polite"></div>
+  </section>
+
+  <!-- ② 日付の差 -->
+  <section class="tool-section" aria-labelledby="diff-heading">
+    <h2 id="diff-heading">② 2つの日付の差</h2>
+    <p class="lead">
+      開始日と終了日を入力すると、日数・週数・概算の年月差が計算されます。
+    </p>
+
+    <div class="settings-panel">
+      <div class="setting-row setting-row--grid">
+        <div>
+          <label for="diff-start-date">開始日</label>
+          <input type="date" id="diff-start-date">
+        </div>
+        <div>
+          <label for="diff-end-date">終了日</label>
+          <input type="date" id="diff-end-date">
+        </div>
+      </div>
+    </div>
+
+    <div id="diff-result" class="result-box" aria-live="polite"></div>
+  </section>
+
+  <!-- ③ N日後/前の日付 -->
+  <section class="tool-section" aria-labelledby="offset-heading">
+    <h2 id="offset-heading">③ 基準日からN日/週/月後(前)の日付</h2>
+    <p class="lead">
+      基準日と数値・単位・前後を指定すると、結果の日付と曜日が計算されます。
+    </p>
+
+    <div class="settings-panel">
+      <div class="setting-row">
+        <label for="offset-base-date">基準日</label>
+        <input type="date" id="offset-base-date">
+      </div>
+      <div class="setting-row setting-row--grid setting-row--offset">
+        <div>
+          <label for="offset-amount">数値</label>
+          <input type="number" id="offset-amount" inputmode="numeric" value="1" step="1">
+        </div>
+        <div>
+          <label for="offset-unit">単位</label>
+          <select id="offset-unit">
+            <option value="day">日</option>
+            <option value="week">週</option>
+            <option value="month">月</option>
+          </select>
+        </div>
+        <div>
+          <label for="offset-direction">方向</label>
+          <select id="offset-direction">
+            <option value="after">後</option>
+            <option value="before">前</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="offset-result" class="result-box" aria-live="polite"></div>
+  </section>
+
+  <!-- 使い方 -->
+  <section class="tool-section" aria-labelledby="howto-heading">
+    <h2 id="howto-heading">使い方</h2>
+    <ol>
+      <li><strong>満年齢・生まれてからの日数</strong>: 生年月日を入力すると、満年齢（◯歳◯ヶ月◯日）、
+        生まれてからの総日数、次の誕生日までの日数が表示されます。基準日（今日）は変更できます。</li>
+      <li><strong>2つの日付の差</strong>: 開始日と終了日を入力すると、日数・週数・概算の年月差が表示されます。</li>
+      <li><strong>N日後/前の日付</strong>: 基準日と数値・単位（日/週/月）・前後を指定すると、
+        計算結果の日付と曜日（日本語）が表示されます。</li>
+    </ol>
+    <p>
+      入力した日付はこの端末（ブラウザ）内でのみ処理され、外部のサーバーへ送信されることはありません。
+      うるう年や月末（例: 1月31日の1ヶ月後は2月28日または29日）も正しく処理します。
+    </p>
+  </section>
+
+  <!-- FAQ -->
+  <section class="tool-section" aria-labelledby="faq-heading">
+    <h2 id="faq-heading">よくある質問</h2>
+
+    <h3>うるう年（2月29日）はどう扱われますか？</h3>
+    <p>
+      満年齢や日付差の計算では、JavaScriptの標準的な日付計算に基づき、うるう年を正しく考慮します。
+      2月29日生まれの方の満年齢も正しく計算されます。なお、平年の誕生日（次の誕生日まで）は
+      2月28日として表示されます。
+    </p>
+
+    <h3>月末を指定してN ヶ月後を計算するとどうなりますか？</h3>
+    <p>
+      例えば1月31日の1ヶ月後は、2月に31日が存在しないため、2月の最終日（28日または29日）に
+      調整されます。同様に、3月31日の1ヶ月後で4月に31日がない場合も4月30日に調整されます。
+    </p>
+
+    <h3>「概算の年月」とは何ですか？</h3>
+    <p>
+      2つの日付の差を「◯年◯ヶ月◯日」の形式で表現したものです。月の日数が異なるため、
+      日数を均等な月数に換算する際に概算（おおよその値）となります。正確な総日数・週数も
+      併せて表示していますので、厳密な比較にはそちらをご利用ください。
+    </p>
+  </section>
+
+  <!-- TODO: アフィリエイト枠 -->
+  <aside class="affiliate-box" aria-labelledby="affiliate-heading">
+    <h2 id="affiliate-heading">おすすめ</h2>
+    <p class="pr-label">[PR]</p>
+    <ul class="affiliate-list" id="affiliate-list">
+      <!-- monetization.js で動的に生成、またはここに直接記述 -->
+    </ul>
+  </aside>
+
+  <!-- Pro案内 -->
+  <section class="pro-box" aria-labelledby="pro-heading">
+    <h2 id="pro-heading">Proプラン</h2>
+    <p>
+      買い切り¥480で、広告非表示・複数人の年齢を一覧管理・計算結果のCSV出力などが
+      利用できる予定です（準備中）。
+    </p>
+    <button id="pro-button" type="button" class="btn btn-primary">Proを購入（準備中）</button>
+    <p class="dev-only">
+      <button id="dev-pro-toggle" type="button" class="btn btn-secondary">Proフラグを切替（開発用）</button>
+    </p>
+  </section>
+
+</main>
+
+<!-- TODO: AdSense 広告枠（コンテンツ下） -->
+<div class="ad-slot ad-slot--bottom" data-ad-position="bottom" aria-hidden="true">
+  <!-- <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="XXXXXXXXXX"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
+  <p class="ad-placeholder">広告スペース（準備中）</p>
+</div>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <nav aria-label="フッターリンク">
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="terms.html">利用規約</a>
+      <a href="operator.html">運営者情報</a>
+    </nav>
+    <p class="copyright">&copy; 2026 ツール工房</p>
+  </div>
+</footer>
+
+<script src="monetization.js" defer></script>
+<script src="app.js" defer></script>
+<script>
+  // PWA: Service Worker 登録（相対パスなのでサブパス公開でも scope が正しく効く）
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
+</script>
+</body>
+</html>

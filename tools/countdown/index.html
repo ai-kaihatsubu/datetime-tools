@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>イベントカウントダウン｜目標日時までの残り時間を表示｜ツール工房</title>
+<meta name="description" content="記念日・締め切り・イベント開催日までの残り時間を「あと○日○時間○分○秒」でリアルタイム表示する無料カウントダウンタイマーです。複数イベントを登録・管理でき、過去日は経過時間を表示します。">
+<link rel="canonical" href="https://ai-kaihatsubu.github.io/018-countdown-timer/">
+
+<!-- OGP -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="イベントカウントダウン｜ツール工房">
+<meta property="og:description" content="目標日時までの残り時間をリアルタイム表示する無料カウントダウンタイマー。複数イベント登録対応。">
+<meta property="og:url" content="https://ai-kaihatsubu.github.io/018-countdown-timer/">
+<meta property="og:image" content="https://ai-kaihatsubu.github.io/018-countdown-timer/icons/icon-512.svg">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0071e3">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.svg">
+
+<!-- JSON-LD: WebApplication -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "イベントカウントダウン",
+  "description": "目標日時までの残り時間をリアルタイムで表示できる無料の自己完結型ツール。複数イベント登録対応。",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY"
+  }
+}
+</script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">本文へスキップ</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <h1 class="logo">イベントカウントダウン</h1>
+    <nav class="header-actions" aria-label="表示設定">
+      <button id="theme-toggle" type="button" aria-label="ダーク/ライトモード切替" aria-pressed="false">
+        <span aria-hidden="true">🌙</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<div class="ad-slot ad-slot--top" data-ad-position="top" aria-hidden="true">
+  <p class="ad-placeholder">広告スペース（準備中）</p>
+</div>
+
+<main id="main" class="container">
+
+  <section class="tool-section" aria-labelledby="tool-heading">
+    <h2 id="tool-heading">イベントを追加</h2>
+    <div id="tool-root">
+      <form id="event-form" class="event-form">
+        <div class="form-row">
+          <label for="event-name">イベント名</label>
+          <input type="text" id="event-name" name="event-name" placeholder="例: 誕生日、発表会、締め切り" required maxlength="60">
+        </div>
+        <div class="form-row form-row--datetime">
+          <label for="event-datetime">目標日時</label>
+          <input type="datetime-local" id="event-datetime" name="event-datetime" required>
+        </div>
+        <div class="form-row form-row--submit">
+          <button type="submit" class="btn btn-primary">追加</button>
+        </div>
+        <p id="form-error" class="form-error" role="alert" aria-live="assertive"></p>
+      </form>
+
+      <ul id="event-list" class="event-list" aria-label="登録済みイベント一覧"></ul>
+      <p id="empty-message" class="empty-message">まだイベントが登録されていません。上のフォームから追加してください。</p>
+    </div>
+  </section>
+
+  <section class="tool-section" aria-labelledby="howto-heading">
+    <h2 id="howto-heading">使い方</h2>
+    <ol>
+      <li>イベント名と目標日時を入力し「追加」ボタンを押します。</li>
+      <li>登録したイベントは一覧にカード表示され、「あと○日○時間○分○秒」がリアルタイムで更新されます。</li>
+      <li>目標日時を過ぎたイベントは「経過」として、過ぎてからの時間が表示されます。</li>
+      <li>複数のイベントを登録できます。登録内容はブラウザ内（localStorage）に保存され、再読み込み後も復元されます。</li>
+      <li>不要なイベントは「削除」ボタンで削除できます。</li>
+    </ol>
+    <h2>よくある質問（FAQ）</h2>
+    <h3>Q. 登録した内容は外部に送信されますか？</h3>
+    <p>A. いいえ。すべての処理はお使いの端末（ブラウザ）内で行われ、外部サーバーへの送信は一切行いません。</p>
+    <h3>Q. 過去の日時を設定するとどうなりますか？</h3>
+    <p>A. 目標日時が現在より過去の場合、カウントダウンの代わりに「経過: ○日○時間○分○秒」が表示されます。</p>
+    <h3>Q. タブを閉じても登録内容は残りますか？</h3>
+    <p>A. はい。登録したイベントはブラウザのlocalStorageに保存されるため、同じブラウザ・同じ端末で再度開いた際に復元されます。別の端末・ブラウザには引き継がれません。</p>
+  </section>
+
+  <aside class="affiliate-box" aria-labelledby="affiliate-heading">
+    <h2 id="affiliate-heading">おすすめ</h2>
+    <p class="pr-label">[PR]</p>
+    <ul class="affiliate-list" id="affiliate-list"></ul>
+  </aside>
+
+  <section class="pro-box" aria-labelledby="pro-heading">
+    <h2 id="pro-heading">Proプラン</h2>
+    <p>広告非表示・追加機能が使える買い切りプランです。</p>
+    <button id="pro-button" type="button" class="btn btn-primary">Proを購入（準備中）</button>
+  </section>
+
+</main>
+
+<div class="ad-slot ad-slot--bottom" data-ad-position="bottom" aria-hidden="true">
+  <p class="ad-placeholder">広告スペース（準備中）</p>
+</div>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <nav aria-label="フッターリンク">
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="terms.html">利用規約</a>
+      <a href="operator.html">運営者情報</a>
+    </nav>
+    <p class="copyright">&copy; 2026 ツール工房</p>
+  </div>
+</footer>
+
+<script src="monetization.js" defer></script>
+<script src="app.js" defer></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
+</script>
+</body>
+</html>

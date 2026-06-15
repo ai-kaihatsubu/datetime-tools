@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>タイマー＆ストップウォッチ｜カウントダウン・ラップ計測・ポモドーロ｜ツール工房</title>
+<meta name="description" content="タイマー（カウントダウン・プリセット・アラーム）、ストップウォッチ（ラップ記録）、ポモドーロタイマーを1つにまとめた無料ツール。WebAudioのビープ音で終了通知。完全オフライン動作。">
+<link rel="canonical" href="https://ai-kaihatsubu.github.io/timer-stopwatch/">
+
+<!-- OGP -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="タイマー＆ストップウォッチ｜カウントダウン・ラップ計測・ポモドーロ">
+<meta property="og:description" content="タイマー・ストップウォッチ・ポモドーロタイマーを1つにまとめた無料ツール。正確な時間計測とビープ音通知に対応。">
+<meta property="og:url" content="https://ai-kaihatsubu.github.io/timer-stopwatch/">
+<meta property="og:image" content="https://ai-kaihatsubu.github.io/timer-stopwatch/icons/icon-512.svg">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.svg">
+
+<!-- JSON-LD: WebApplication -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "タイマー＆ストップウォッチ",
+  "description": "タイマー・ストップウォッチ・ポモドーロタイマーを1つにまとめた無料のオンラインツール。",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY"
+  }
+}
+</script>
+
+<link rel="stylesheet" href="style.css">
+
+<!-- TODO: AdSense（社長がキー登録後に有効化）
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+-->
+</head>
+<body>
+
+<a class="skip-link" href="#main">本文へスキップ</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <h1 class="logo">タイマー＆ストップウォッチ</h1>
+    <nav class="header-actions" aria-label="表示設定">
+      <button id="theme-toggle" type="button" aria-label="ダーク/ライトモード切替" aria-pressed="false">
+        <span aria-hidden="true">🌙</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- TODO: AdSense 広告枠（コンテンツ上） -->
+<div class="ad-slot ad-slot--top" data-ad-position="top" aria-hidden="true">
+  <!-- <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="XXXXXXXXXX"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
+  <p class="ad-placeholder">広告スペース（準備中）</p>
+</div>
+
+<main id="main" class="container">
+
+  <section class="tool-section" aria-labelledby="tool-heading">
+    <h2 id="tool-heading" class="sr-only">タイマー・ストップウォッチ・ポモドーロ</h2>
+
+    <div id="tool-root">
+      <!-- タブ -->
+      <div class="tabs" role="tablist" aria-label="機能切替">
+        <button id="tab-timer" class="tab-btn" role="tab" aria-selected="true" aria-controls="panel-timer" type="button">タイマー</button>
+        <button id="tab-stopwatch" class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-stopwatch" type="button">ストップウォッチ</button>
+        <button id="tab-pomodoro" class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-pomodoro" type="button">ポモドーロ</button>
+      </div>
+
+      <!-- ① タイマー -->
+      <div id="panel-timer" class="tab-panel" role="tabpanel" aria-labelledby="tab-timer">
+        <div class="display-wrap">
+          <p class="big-display" id="timer-display" aria-live="off">00:00:00</p>
+        </div>
+
+        <div class="time-set-row">
+          <div class="time-set-field">
+            <label for="timer-hours">時</label>
+            <input type="number" id="timer-hours" min="0" max="99" value="0" inputmode="numeric">
+          </div>
+          <div class="time-set-field">
+            <label for="timer-minutes">分</label>
+            <input type="number" id="timer-minutes" min="0" max="59" value="5" inputmode="numeric">
+          </div>
+          <div class="time-set-field">
+            <label for="timer-seconds">秒</label>
+            <input type="number" id="timer-seconds" min="0" max="59" value="0" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="preset-row" role="group" aria-label="プリセット時間">
+          <button type="button" class="btn btn-secondary preset-btn" data-preset-minutes="1">1分</button>
+          <button type="button" class="btn btn-secondary preset-btn" data-preset-minutes="3">3分</button>
+          <button type="button" class="btn btn-secondary preset-btn" data-preset-minutes="5">5分</button>
+          <button type="button" class="btn btn-secondary preset-btn" data-preset-minutes="10">10分</button>
+        </div>
+
+        <div class="control-row">
+          <button id="timer-start" type="button" class="btn btn-primary">開始</button>
+          <button id="timer-pause" type="button" class="btn btn-secondary" disabled>一時停止</button>
+          <button id="timer-reset" type="button" class="btn btn-secondary">リセット</button>
+        </div>
+
+        <p id="timer-status" class="status-text" role="status" aria-live="polite"></p>
+      </div>
+
+      <!-- ② ストップウォッチ -->
+      <div id="panel-stopwatch" class="tab-panel is-hidden" role="tabpanel" aria-labelledby="tab-stopwatch" hidden>
+        <div class="display-wrap">
+          <p class="big-display" id="stopwatch-display" aria-live="off">00:00:00.00</p>
+        </div>
+
+        <div class="control-row">
+          <button id="stopwatch-start" type="button" class="btn btn-primary">開始</button>
+          <button id="stopwatch-lap" type="button" class="btn btn-secondary" disabled>ラップ</button>
+          <button id="stopwatch-reset" type="button" class="btn btn-secondary" disabled>リセット</button>
+        </div>
+
+        <h3>ラップ記録</h3>
+        <ol id="lap-list" class="lap-list" aria-label="ラップ記録一覧"></ol>
+      </div>
+
+      <!-- ③ ポモドーロ -->
+      <div id="panel-pomodoro" class="tab-panel is-hidden" role="tabpanel" aria-labelledby="tab-pomodoro" hidden>
+        <div class="display-wrap">
+          <p class="pomodoro-phase" id="pomodoro-phase">作業時間</p>
+          <p class="big-display" id="pomodoro-display" aria-live="off">25:00</p>
+        </div>
+
+        <p class="pomodoro-count">完了した作業セッション: <strong id="pomodoro-count">0</strong> 回</p>
+
+        <div class="control-row">
+          <button id="pomodoro-start" type="button" class="btn btn-primary">開始</button>
+          <button id="pomodoro-pause" type="button" class="btn btn-secondary" disabled>一時停止</button>
+          <button id="pomodoro-reset" type="button" class="btn btn-secondary">リセット</button>
+        </div>
+
+        <p id="pomodoro-status" class="status-text" role="status" aria-live="polite"></p>
+        <p class="pomodoro-note">作業25分・休憩5分のサイクルを繰り返します。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool-section" aria-labelledby="howto-heading">
+    <h2 id="howto-heading">使い方</h2>
+    <ul>
+      <li><strong>タイマー</strong>: 時・分・秒を指定するかプリセットボタンを押して「開始」を押すと、指定時間からカウントダウンします。一時停止・リセットが可能で、終了するとビープ音とタブタイトルの点滅で通知します。</li>
+      <li><strong>ストップウォッチ</strong>: 「開始」で計測を開始し、「ラップ」を押すとその時点までの経過時間を記録します。「リセット」で計測とラップ記録をクリアします。</li>
+      <li><strong>ポモドーロ</strong>: 「開始」を押すと作業25分→休憩5分のサイクルが自動で進みます。完了した作業セッションの回数が表示されます。</li>
+    </ul>
+  </section>
+
+  <section class="tool-section" aria-labelledby="faq-heading">
+    <h2 id="faq-heading">よくある質問（FAQ）</h2>
+    <dl class="faq-list">
+      <dt>Q. アラーム音はどこから再生されますか？音声ファイルは必要ですか？</dt>
+      <dd>A. 音声ファイルは使用していません。Web Audio APIを使ってブラウザ内でビープ音を生成しています。ブラウザの自動再生制限により、最初に「開始」ボタンを押すまで音は鳴りません。</dd>
+
+      <dt>Q. タブを切り替えても時間の計測は続きますか？</dt>
+      <dd>A. はい。実時刻（Date.now）を基準に計測しているため、タブを切り替えたりブラウザを最小化しても、表示が更新された際に正しい経過時間・残り時間が表示されます。</dd>
+
+      <dt>Q. データはサーバーに送信されますか？</dt>
+      <dd>A. いいえ。本ツールはすべての処理をブラウザ内（端末内）で行い、外部への送信は一切行いません。</dd>
+
+      <dt>Q. タイマー終了時、音以外にも通知はありますか？</dt>
+      <dd>A. はい。ビープ音に加えて、ブラウザのタブのタイトルが点滅して終了をお知らせします。タブをアクティブにすると点滅は止まります。</dd>
+    </dl>
+  </section>
+
+  <!-- アフィリエイト枠 -->
+  <aside class="affiliate-box" aria-labelledby="affiliate-heading">
+    <h2 id="affiliate-heading">おすすめ</h2>
+    <p class="pr-label">[PR]</p>
+    <ul class="affiliate-list" id="affiliate-list">
+      <!-- monetization.js で動的に生成 -->
+    </ul>
+  </aside>
+
+  <!-- Pro案内 -->
+  <section class="pro-box" aria-labelledby="pro-heading">
+    <h2 id="pro-heading">Proプラン</h2>
+    <p>広告非表示・追加機能が使える買い切りプランです。</p>
+    <button id="pro-button" type="button" class="btn btn-primary">Proを購入（準備中）</button>
+  </section>
+
+  <!-- 開発用Proフラグ切替（公開前に削除を検討） -->
+  <section class="tool-section" aria-label="開発用設定">
+    <button id="dev-pro-toggle" type="button" class="btn btn-secondary">Proフラグを切替（開発用）</button>
+  </section>
+
+</main>
+
+<!-- TODO: AdSense 広告枠（コンテンツ下） -->
+<div class="ad-slot ad-slot--bottom" data-ad-position="bottom" aria-hidden="true">
+  <!-- <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="XXXXXXXXXX"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
+  <p class="ad-placeholder">広告スペース（準備中）</p>
+</div>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <nav aria-label="フッターリンク">
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="terms.html">利用規約</a>
+      <a href="operator.html">運営者情報</a>
+    </nav>
+    <p class="copyright">&copy; 2026 ツール工房</p>
+  </div>
+</footer>
+
+<script src="monetization.js" defer></script>
+<script src="app.js" defer></script>
+<script>
+  // PWA: Service Worker 登録（相対パスなのでサブパス公開でも scope が正しく効く）
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
+</script>
+</body>
+</html>

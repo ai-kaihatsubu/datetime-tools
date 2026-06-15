@@ -1,0 +1,1 @@
+window.SUITE_CONFIG = { brand: "日付・時間ツール", desc: "年齢・日数計算、西暦和暦変換、カウントダウン、タイマーをまとめた無料ツール", tabs: [ { label: "年齢・日数", path: "./tools/date/index.html" }, { label: "西暦和暦", path: "./tools/wareki/index.html" }, { label: "カウントダウン", path: "./tools/countdown/index.html" }, { label: "タイマー", path: "./tools/timer/index.html" } ] };
