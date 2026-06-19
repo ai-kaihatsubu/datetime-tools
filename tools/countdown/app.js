@@ -11,7 +11,7 @@
   "use strict";
 
   const STORAGE_KEY_THEME = "tf_theme"; // "light" | "dark"
-  const STORAGE_KEY_PRO = "tf_pro";     // "1" で Pro 有効（擬似フラグ）
+  const STORAGE_KEY_PRO = "tf_pro";     // "1" でお布施済みフラグ（擬似）
   const STORAGE_KEY_EVENTS = "cdt_events"; // イベント一覧の保存キー
 
   /* ---------- テーマ切替 ---------- */

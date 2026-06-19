@@ -2,7 +2,7 @@
    年齢・日数計算ツール : app.js
    バニラJS / 外部依存なし
    - ダーク/ライト切替（localStorage保存）
-   - Proフラグ判定（広告非表示などの分岐の起点）
+   - お布施フラグ判定（分岐の起点）
    - ①満年齢・総日数・次の誕生日まで ②2日付の差 ③基準日からN日後/前
    - 日付はすべてこの端末（ブラウザ）内で処理。外部送信・保存なし
    ============================================ */
@@ -11,7 +11,7 @@
   "use strict";
 
   const STORAGE_KEY_THEME = "tf_theme"; // "light" | "dark"
-  const STORAGE_KEY_PRO = "tf_pro";     // "1" で Pro 有効（擬似フラグ）
+  const STORAGE_KEY_PRO = "tf_pro";     // "1" でお布施済みフラグ（擬似）
 
   const WEEKDAY_LABELS = ["日", "月", "火", "水", "木", "金", "土"];
 
@@ -51,7 +51,7 @@
     }
   }
 
-  /* ---------- Pro判定（広告非表示など） ---------- */
+  /* ---------- お布施フラグ判定 ---------- */
   function isPro() {
     return localStorage.getItem(STORAGE_KEY_PRO) === "1";
   }

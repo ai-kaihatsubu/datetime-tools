@@ -23,18 +23,18 @@
 ## プライバシー設計
 
 - すべての計測・通知処理は端末内のみで行われ、**外部送信は一切行いません。**
-- localStorageには「テーマ設定・Proフラグ」のみを保存します（キー: `tf_theme` / `tf_pro`）。
+- localStorageには「テーマ設定」のみを保存します（キー: `tf_theme`）。
 
 ## 収益設計（現状はすべてプレースホルダ）
 
 | レール | 実装箇所 | 状態 |
 | --- | --- | --- |
-| AdSense | `index.html` の `.ad-slot--top` / `.ad-slot--bottom`、`monetization.js` の `ADSENSE_CLIENT_ID` | プレースホルダ。Pro時は非表示 |
+| AdSense | `index.html` の `.ad-slot--top` / `.ad-slot--bottom`、`monetization.js` の `ADSENSE_CLIENT_ID` | プレースホルダ。お布施とは無関係（広告はお布施に関わらず表示） |
 | アフィリエイト | `monetization.js` の `AFFILIATE_ITEMS`（集中・作業グッズ関連） | プレースホルダURL、[PR]表記・`rel="sponsored nofollow noopener"`設定済み |
-| Stripe (Pro ¥480買い切り) | `monetization.js` の `STRIPE_PAYMENT_LINK_URL`、`#pro-button` | 未設定時は「準備中」アラート表示 |
+| Stripe (お布施) | `monetization.js` の `STRIPE_DONATION_URL`、`#ofuse-button` | 未設定時はボタン非表示 |
 
 Pro動作確認用に、画面下部の「Proフラグを切替（開発用）」ボタンでlocalStorageの
-`tf_pro`フラグを切り替えられます（広告非表示の挙動を確認できます）。
+`tf_ofuse`フラグを切り替えられます（開発用）。
 
 ## 公開手順（社長がやるキー登録一覧）
 
@@ -42,8 +42,8 @@ Pro動作確認用に、画面下部の「Proフラグを切替（開発用）�
    `index.html`内のコメントアウトされたAdSenseスクリプト・`<ins>`タグを有効化する
 2. アフィリエイト提携（集中タイマー・作業グッズ等）の承認後、`monetization.js`の
    `AFFILIATE_ITEMS`を実際のリンクに置き換える
-3. Stripeで「タイマー＆ストップウォッチ Pro ¥480」のPayment Linkを発行し、
-   `monetization.js`の`STRIPE_PAYMENT_LINK_URL`に設定する
+3. Stripeでお布施用のPayment Linkを発行し、
+   `monetization.js`の`STRIPE_DONATION_URL`に設定する
 4. `operator.html`の運営者情報・特定商取引法に基づく表記のTODOを埋める
 5. 公開先リポジトリ（timer-stopwatch）でGitHub Pagesを設定し、`canonical`/OGPのURL
    （`https://ai-kaihatsubu.github.io/timer-stopwatch/`）が実URLと一致していることを確認する
